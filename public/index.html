@@ -24,18 +24,8 @@
             databaseURL: "https://shared-edit-default-rtdb.firebaseio.com",
         };
         firebase.initializeApp(firebaseConfig);
-        let auth = firebase.auth();
-
-        function signin() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithRedirect(provider);
-            auth.getRedirectResult()
-                .then(function (result) {
-                })
-                .error(function (e) {
-                });
-        }
     </script>
+    <script src="index.js"/>
 </head>
 <body>
 <div class="menu">
@@ -59,93 +49,4 @@
 </div>
 <textarea oninput="changed(this);"></textarea>
 </body>
-<script type="text/javascript">
-    let db = firebase.database().ref();
-
-    var current;
-    let myEmail;
-    auth.onAuthStateChanged(function (user) {
-        if (user) {
-            let email = user.email.replaceAll('.', ',');
-            myEmail = email;
-            db.child('/user/' + email).once('value', function (snap) {
-                current = 'Public';
-                if (snap.exists()) {
-                    let v = snap.val();
-                    if (v.open) {
-                        current = v.open;
-                    } else {
-                        db.child('/user/' + email).set({
-                            open: 'Public'
-                        });
-                    }
-                } else {
-                    db.child('/user/' + email).set({
-                        open: 'Public'
-                    });
-                }
-                db.child('/user').on('value', (snap) => {
-                    let u = snap.val();
-                    let $ul = $('.user-list');
-                    if (current === 'Public') {
-                        $ul.html('<li class="active">Public</li>');
-                    } else {
-                        $ul.html('<li>Public</li>');
-                    }
-                    for (usr in u) {
-                        if (usr !== email) {
-                            let e = usr.replaceAll(',', '.');
-                            if (usr === current) {
-                                $ul.append(`<li class="active">${e}</li>`);
-                            } else {
-                                $ul.append(`<li>${e}</li>`);
-                            }
-                        }
-                    }
-                    $('li', $ul).click(function () {
-                        $('li', $ul).removeClass('active');
-                        $(this).addClass('active');
-                        current = this.innerHTML.replaceAll('.', ',');
-                        db.child('/user/' + myEmail + '/open').set(current);
-                        onUserChange();
-                    });
-                    onUserChange();
-                });
-            });
-        } else {
-            signin();
-        }
-    });
-
-    let $menu = $('.menu');
-    $('.menu-btn').click(function () {
-        $menu.toggleClass('active');
-    });
-
-    let currentNode;
-
-    function changed(e) {
-        currentNode.set(e.value);
-    }
-
-    function onUserChange() {
-        if (currentNode)
-            currentNode.off();
-        else if (!current)
-            current = 'Public';
-        if (current === 'Public')
-            currentNode = db.child('text');
-        else {
-            let nd = current + '_' + myEmail;
-            if (current.localeCompare(myEmail) === -1)
-                nd = myEmail + '_' + current;
-            currentNode = db.child('all/' + nd);
-        }
-        currentNode.on('value', (snap) => {
-            $('textarea').val(snap.val());
-        });
-    }
-
-    console.log('version 3.0.0');
-</script>
 </html>
