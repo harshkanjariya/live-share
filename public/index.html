@@ -25,28 +25,28 @@
         };
         firebase.initializeApp(firebaseConfig);
     </script>
-    <script src="index.js"/>
 </head>
 <body>
-<div class="menu">
-    <div style="display: flex; flex-direction: row-reverse; padding: 5px">
-        <i class="fa fa-close" style="font-size: 26px;" onclick="$menu.removeClass('active')"></i>
+    <div class="menu">
+        <div style="display: flex; flex-direction: row-reverse; padding: 5px">
+            <i class="fa fa-close" style="font-size: 26px;" onclick="$menu.removeClass('active')"></i>
+        </div>
+        <ul class="user-list"></ul>
+        <ul>
+            <li></li>
+            <li onclick="auth.signOut().then(function() {
+                  location.reload();
+                });">Logout
+            </li>
+        </ul>
     </div>
-    <ul class="user-list"></ul>
-    <ul>
-        <li></li>
-        <li onclick="auth.signOut().then(function() {
-			  location.reload();
-			});">Logout
-        </li>
-    </ul>
-</div>
-<div class="column">
-    <div class="menu-btn">
-        <i class="fa fa-bars" style="color: white; font-size: 26px"></i>
+    <div class="column">
+        <div class="menu-btn">
+            <i class="fa fa-bars" style="color: white; font-size: 26px"></i>
+        </div>
+        <ul class="user-list"></ul>
     </div>
-    <ul class="user-list"></ul>
-</div>
-<textarea oninput="changed(this);"></textarea>
+    <textarea oninput="changed(this);"></textarea>
 </body>
+<script src="index.js"/>
 </html>
